@@ -1,0 +1,14 @@
+{
+  "name": "whatsapp-demo-chatbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "hello.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "private": true,
+  "dependencies": {
+    "@green-api/whatsapp-bot": "^0.2.5",
+    "js-yaml": "^4.1.0"
+  }
+}
