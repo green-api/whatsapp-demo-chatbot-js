@@ -28,12 +28,12 @@ async function main() {
         console.log("cleared")
 
 
-
         const startScene = new Scene('startScene')
         startScene.enter( (ctx) => {
             ctx.reply(strings.select_language)
             ctx.scene.enter('mainMenuScene')
         })
+
 
         const mainMenuScene = new Scene('mainMenuScene')
         mainMenuScene.hears(['1'], (ctx) => {
@@ -80,19 +80,57 @@ async function main() {
                 strings.send_image_message[ctx.session.lang] + strings.links[ctx.session.lang].send_file_documentation)
         })
         endpointsScene.hears(['4'], (ctx) => {
-            ctx.reply("4")
+            ctx.reply(strings.send_audio_message[ctx.session.lang] + strings.links[ctx.session.lang].send_file_documentation)
+            ctx.telegram.restAPI.file.sendFileByUrl(
+                ctx.update.message.chat.id.toString(),
+                undefined,
+                configData.link_3.toString(),
+                "audio.mp3",
+                strings.send_image_message[ctx.session.lang] + strings.links[ctx.session.lang].send_file_documentation)
         })
         endpointsScene.hears(['5'], (ctx) => {
-            ctx.reply("5")
+            ctx.telegram.restAPI.file.sendFileByUrl(
+                ctx.update.message.chat.id.toString(),
+                undefined,
+                configData.link_4.toString(),
+                "video.mp4",
+                strings.send_video_message[ctx.session.lang] + strings.links[ctx.session.lang].send_file_documentation)
         })
         endpointsScene.hears(['6'], (ctx) => {
-            ctx.reply("6")
+            ctx.reply(strings.send_contact_message[ctx.session.lang] + strings.links[ctx.session.lang].send_contact_documentation)
+
+            const contact = {
+                firstName: ctx.update.message.from.first_name.toString(),
+                lastName: ctx.update.message.from.last_name.toString(),
+                phoneContact: parseInt(ctx.update.message.chat.id)
+            };
+            ctx.telegram.restAPI.message.sendContact(
+                ctx.update.message.chat.id.toString(),
+                undefined,
+                contact
+            )
         })
         endpointsScene.hears(['7'], (ctx) => {
-            ctx.reply("7")
+            ctx.reply(strings.send_location_message[ctx.session.lang] + strings.links[ctx.session.lang].send_location_documentation)
+            ctx.telegram.restAPI.message.sendLocation(
+                ctx.update.message.chat.id.toString(),
+                35.888171,
+                14.440230
+            )
         })
         endpointsScene.hears(['8'], (ctx) => {
-            ctx.reply("8")
+            ctx.reply(strings.send_poll_message[ctx.session.lang] + strings.links[ctx.session.lang].send_poll_documentation)
+
+            var options = [];
+            options.push({optionName: strings.poll_option_1[ctx.session.lang]})
+            options.push({optionName: strings.poll_option_2[ctx.session.lang]})
+            options.push({optionName: strings.poll_option_3[ctx.session.lang]})
+
+            ctx.telegram.restAPI.message.sendPoll(
+                ctx.update.message.chat.id.toString(),
+                strings.poll_question[ctx.session.lang].toString(),
+                options
+            )
         })
         endpointsScene.hears(['9'], (ctx) => {
             ctx.reply("9")
