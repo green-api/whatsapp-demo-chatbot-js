@@ -9,6 +9,7 @@
   "private": true,
   "dependencies": {
     "@green-api/whatsapp-bot": "^0.2.5",
+    "axios": "^1.6.7",
     "js-yaml": "^4.1.0"
   }
 }
