@@ -8,7 +8,7 @@
   },
   "private": true,
   "dependencies": {
-    "@green-api/whatsapp-bot": "^0.2.5",
+    "@green-api/whatsapp-bot": "github:green-api/whatsapp-chatbot-js#SW-3014",
     "axios": "^1.6.7",
     "js-yaml": "^4.1.0"
   }
