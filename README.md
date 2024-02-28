@@ -18,15 +18,11 @@ The chatbot clearly demonstrates the use of the API to send text messages, files
 
 ## Setting up the environment for running the chatbot
 
-To run the chatbot, you need to install the js environment. Download the latest release suitable for your operating system from [official website](https://go.dev/dl/). Follow the default settings and complete the environment installation.
+To launch the chatbot, you need to install the js environment. If necessary, download and install the latest version of Node.js from [official website](https://nodejs.org/en)
 
 After completion, you need to check whether the environment was deployed correctly. To do this, open a command line (for example, cmd or bash) and enter the query:
 ```
-    go version
-```
-To work correctly, the response to the entered request must be a version of Go no lower than:
-```
-    go version go 1.19
+node -v
 ```
 
 Download and unzip the [zip-archive](https://github.com/green-api/whatsapp-demo-chatbot-js) of the project or clone it with the version control system command:
@@ -53,30 +49,33 @@ In order to set up a chatbot on your Whatsapp account, you need to go to [your p
     apiTokenInstance
 ```
 
-Don't forget to enable all notifications in your instance settings, so that the chatbot can immediately start receiving messages.
-After receiving these parameters, find the class [`main.go`](main.go) and enter `idInstance` and `apiTokenInstance` into the constant values.
+After receiving these parameters, find the class [`bot.js`](bot.js) and enter `idInstance` and `apiTokenInstance` into the constant values.
 Data initialization is necessary to link the bot with your Whatsapp account:
 
-```
-    const (
-        idInstance       = "{INSTANCE}"
-        apiTokenInstance = "{TOKEN}"
-    )
+```javascript
+    const bot = new WhatsAppBot({
+        idInstance: "{{idInstance}}",
+        apiTokenInstance: "{{apiTokenInstance}}",
+    })
 ```
 
 You can then run the program by clicking start in the IDE interface or entering the following query on the command line:
 ```
-    go run main.go
+    node bot.js
 ```
 This request will start the chatbot. The process begins with chatbot initialization, which includes changing the settings of the associated instance.
 
 The library [whatsapp-chatbot-js](https://github.com/green-api/whatsapp-chatbot-js) contains a mechanism for changing instance settings using the [SetSettings](https://green-api.com/en/docs/api/account/SetSettings/) method, which is launched when the chatbot is turned on.
 
 All settings for receiving notifications are disabled by default; the chatbot will enable the following settings:
-```
-     "incomingWebhook": "yes",
-     "outgoingMessageWebhook": "yes",
-     "outgoingAPIMessageWebhook": "yes",
+```javascript
+    let settings = await bot.telegram.restAPI.settings.setSettings({
+        incomingWebhook: "yes",
+        outgoingMessageWebhook: "yes",
+        outgoingAPIMessageWebhook: "yes",
+        pollMessageWebhook: "yes",
+        markIncomingMessagesReaded: "yes"
+    })
 ```
 which are responsible for receiving notifications about incoming and outgoing messages.
 
@@ -94,22 +93,32 @@ To stop the chatbot, use the keyboard shortcut `Ctrl + C` in the command line.
 
 By default, the chatbot uses links to download files from the network, but users can add their own links to files, one for a file of any extension pdf / docx /... and one for a picture.
 
-Links must lead to files from cloud storage or public access. In the file [`endpoints.go`](scenes/endpoints.go) there is the following code to send the file:
-```go
-case "2":
-     message.AnswerWithUrlFile(
-         "https://images.rawpixel.com/image_png_1100/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTExL3Jhd3BpeGVsb2ZmaWNlMTlfcGhvdG9fb2ZfY29yZ2lzX2luX2NocmlzdG1hc19zd2Vhd GVyX2luX2FfcGFydF80YWM1ODk3Zi1mZDMwLTRhYTItYWM5NS05YjY3Yjg1MTFjZmUucG5n.png",
-         "corgi.png",
-         util.GetString([]string{"send_file_message", lang})+util.GetString([]string{"links", lang, "send_file_documentation"}))
+Links must lead to files from cloud storage or public access. In the scene `endpointsScene` there is the following code to send the file:
+```javascript
+    endpointsScene.hears(['2'], (ctx) => {
+    if (checkSession(ctx)) {
+        ctx.telegram.restAPI.file.sendFileByUrl(
+            ctx.update.message.chat.id.toString(),
+            undefined,
+            "https://storage.yandexcloud.net/sw-prod-03-test/ChatBot/corgi.pdf",
+            "image.pdf",
+            strings.send_file_message[ctx.session.lang] + strings.links[ctx.session.lang].send_file_documentation)
+    }
+})
 ```
 Add a link to a file of any extension as the first parameter of the `answerWithUrlFile` method and specify the file name in the second parameter. The file name must contain an extension, for example "somefile.pdf".
 This line after modification will be in the following format:
-```go
-case "2":
-     message.AnswerWithUrlFile(
-         "https://...somefile.pdf",
-         "somefile.pdf",
-         util.GetString([]string{"send_file_message", lang})+util.GetString([]string{"links", lang, "send_file_documentation"}))
+```javascript
+endpointsScene.hears(['2'], (ctx) => {
+    if (checkSession(ctx)) {
+        ctx.telegram.restAPI.file.sendFileByUrl(
+            ctx.update.message.chat.id.toString(),
+            undefined,
+            "https://...somefile.pdf",
+            "somefile.pdf",
+            strings.send_file_message[ctx.session.lang] + strings.links[ctx.session.lang].send_file_documentation)
+    }
+})
 ```
 
 All changes must be saved, after which you can launch the chatbot. To launch the chatbot, return to [step 2](#launch-chatbot).
