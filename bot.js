@@ -26,7 +26,6 @@ async function main() {
     console.log(settings);
 
     await clearWebhookQueue(bot)
-    console.log("cleared")
 
 
     const startScene = new Scene('startScene')
