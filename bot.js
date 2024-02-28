@@ -1,5 +1,4 @@
 const {WhatsAppBot} = require('@green-api/whatsapp-bot');
-const {getConfigData} = require("./util/config");
 const {getStringsData} = require("./util/ymlReader");
 const fs = require('fs');
 const FormData = require('form-data');
@@ -11,11 +10,10 @@ const Scene = WhatsAppBot.BaseScene
 main()
 
 async function main() {
-    const configData = await getConfigData()
     const strings = getStringsData()
     const bot = new WhatsAppBot({
-        idInstance: configData.user_id.toString(),
-        apiTokenInstance: configData.api_token_id,
+        idInstance: "{{INSTANCE_ID}}",
+        apiTokenInstance: "{{TOKEN}}",
     })
 
     let settings = await bot.telegram.restAPI.settings.setSettings({
@@ -88,7 +86,7 @@ async function main() {
             ctx.telegram.restAPI.file.sendFileByUrl(
                 ctx.update.message.chat.id.toString(),
                 undefined,
-                configData.link_1.toString(),
+                "https://storage.yandexcloud.net/sw-prod-03-test/ChatBot/corgi.pdf",
                 "image.pdf",
                 strings.send_file_message[ctx.session.lang] + strings.links[ctx.session.lang].send_file_documentation)
         }
@@ -98,7 +96,7 @@ async function main() {
             ctx.telegram.restAPI.file.sendFileByUrl(
                 ctx.update.message.chat.id.toString(),
                 undefined,
-                configData.link_2.toString(),
+                "https://storage.yandexcloud.net/sw-prod-03-test/ChatBot/corgi.jpg",
                 "image.jpg",
                 strings.send_image_message[ctx.session.lang] + strings.links[ctx.session.lang].send_file_documentation)
         }
@@ -107,9 +105,9 @@ async function main() {
         if (checkSession(ctx)) {
             await ctx.reply(strings.send_audio_message[ctx.session.lang] + strings.links[ctx.session.lang].send_file_documentation)
 
-            let fileLink = configData.link_5.toString()
+            let fileLink = "https://storage.yandexcloud.net/sw-prod-03-test/ChatBot/Audio_bot_eng.mp3"
             if (ctx.session.lang === "ru") {
-                fileLink = configData.link_3.toString()
+                fileLink = "https://storage.yandexcloud.net/sw-prod-03-test/ChatBot/Audio_bot.mp3"
             }
             ctx.telegram.restAPI.file.sendFileByUrl(
                 ctx.update.message.chat.id.toString(),
@@ -121,9 +119,9 @@ async function main() {
     })
     endpointsScene.hears(['5'], (ctx) => {
         if (checkSession(ctx)) {
-            let fileLink = configData.link_6.toString()
+            let fileLink = "https://storage.yandexcloud.net/sw-prod-03-test/ChatBot/Video_bot_eng.mp4"
             if (ctx.session.lang === "ru") {
-                fileLink = configData.link_4.toString()
+                fileLink = "https://storage.yandexcloud.net/sw-prod-03-test/ChatBot/Video_bot_ru.mp4"
             }
             ctx.telegram.restAPI.file.sendFileByUrl(
                 ctx.update.message.chat.id.toString(),
