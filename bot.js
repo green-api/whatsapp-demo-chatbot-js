@@ -204,7 +204,7 @@ async function main() {
         if (checkSession(ctx)) {
             await ctx.reply(strings.send_link_message_preview[ctx.session.lang].toString() +
                 strings.links[ctx.session.lang].send_link_documentation)
-            ctx.telegram.restAPI.message.sendMessageExtended(
+            ctx.telegram.restAPI.message.sendMessage(
                 ctx.update.message.chat.id.toString(),
                 undefined,
                 strings.send_link_message_no_preview[ctx.session.lang].toString() +
@@ -231,7 +231,7 @@ async function main() {
     })
     endpointsScene.hears(['12'], (ctx) => {
         if (checkSession(ctx)) {
-            ctx.telegram.restAPI.message.sendMessageExtended(
+            ctx.telegram.restAPI.message.sendMessage(
                 ctx.update.message.chat.id.toString(),
                 undefined,
                 strings.send_quoted_message[ctx.session.lang].toString() +
