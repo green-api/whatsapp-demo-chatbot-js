@@ -322,11 +322,11 @@ async function main() {
             let setGroupPicture = await ctx.telegram.restAPI.group.setGroupPicture(group.chatId.toString(), "assets/group_avatar.jpg");
             let isSet = setGroupPicture.setGroupPicture
             if (isSet) {
-                await ctx.telegram.restAPI.message.getMessage(group.chatId,
+                await ctx.telegram.restAPI.message.sendMessage(group.chatId, undefined,
                     strings.send_group_message[ctx.session.lang] +
                     strings.links[ctx.session.lang].create_group_documentation)
             } else {
-                await ctx.telegram.restAPI.message.getMessage(group.chatId,
+                await ctx.telegram.restAPI.message.sendMessage(group.chatId, undefined,
                     strings.send_group_message_set_picture_false[ctx.session.lang] +
                     strings.links[ctx.session.lang].create_group_documentation)
             }
